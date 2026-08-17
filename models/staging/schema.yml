@@ -1,0 +1,15 @@
+version: 2
+
+models:
+  - name: gdelt_event_1_0
+    description: "GDELT Event Database 1.0 transformed and cleaned"
+    columns:
+      - name: GLOBAL_EVENT_ID
+        description: Unique identifier for the event
+        tests:
+          - unique
+          - not_null
+      - name: EVENT_DATE
+        description: Date of the event in YYYYMMDD format
+        tests:
+          - not_null

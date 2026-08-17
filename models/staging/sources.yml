@@ -1,0 +1,27 @@
+version: 2
+
+sources:
+  - name: GDELT
+    database: DEV_GDELT
+    schema: LANDING
+    description: GDELT Event Database 1.0
+    tables:
+      - name: GDELT_EVENT_DATABASE_1_0_RAW
+        description: Raw GDELT events ingested daily from the GDELT Event Database. One row represents one reported geopolitical event.
+        config:
+          loaded_at_field: INGESTED_AT
+          freshness: 
+            warn_after: {count: 2, period: day}
+            error_after: {count: 3, period: day}
+        columns:
+          - name: GLOBALEVENTID
+            description: Unique identifier for the event
+            tests:
+              - unique
+              - not_null
+          - name: SQLDATE
+            description: Date of the event in YYYYMMDD format
+            tests:
+              - not_null
+            # TODO: faltan añadir tests a las columnas que lo necesiten. (i.e not_null, unique, relationships, accepted_values, etc.)
+            
