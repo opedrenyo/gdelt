@@ -4,6 +4,13 @@ WITH GDELT_CLEAN_CTE AS (
     SELECT 
         * FROM {{ source('GDELT', 'GDELT_EVENT_DATABASE_1_0_RAW')}}
     WHERE EVENTCODE NOT IN ('--','---', 'X')
+
+    {% if is_incremental() %}
+    AND NOT EXISTS (
+            SELECT 1
+            FROM {{ this }} AS TARGET
+            WHERE TARGET.GLOBAL_EVENT_ID = RAW.GLOBALEVENTID
+    {% endif %}
 ),
 
 GDELT_EVENTS_CTE AS (
@@ -44,6 +51,8 @@ GDELT_EVENTS_CTE AS (
     TO_DATE(DATEADDED,'YYYYMMDD') AS DATE_ADDED,
     SOURCEURL::VARCHAR AS SOURCE_URL
     FROM GDELT_CLEAN_CTE
+
+
 )
 
 SELECT * FROM GDELT_EVENTS_CTE
