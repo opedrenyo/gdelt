@@ -1,6 +1,12 @@
-{{ config(materialized='incremental', unique_key='GLOBALEVENTID', incremental_strategy='merge')}}
+{{ config(materialized='incremental', unique_key='GLOBALEVENTID', incremental_strategy='merge') }}
 
-WITH GDELT_EVENTS_CTE AS (
+WITH GDELT_CLEAN_CTE AS (
+    SELECT 
+        * FROM {{ source('GDELT', 'GDELT_EVENT_DATABASE_1_0_RAW')}}
+    WHERE EVENTCODE NOT IN ('--','---', 'X')
+),
+
+GDELT_EVENTS_CTE AS (
     SELECT 
     GLOBALEVENTID::BIGINT AS GLOBAL_EVENT_ID,
     TO_DATE(SQLDATE, 'YYYYMMDD') AS EVENT_DATE,
@@ -37,7 +43,7 @@ WITH GDELT_EVENTS_CTE AS (
     ACTIONGEO_COUNTRYCODE::VARCHAR AS ACTION_GEO_COUNTRY_CODE,
     TO_DATE(DATEADDED,'YYYYMMDD') AS DATE_ADDED,
     SOURCEURL::VARCHAR AS SOURCE_URL
-    FROM {{ source('GDELT', 'GDELT_EVENT_DATABASE_1_0_RAW') }}
+    FROM GDELT_CLEAN_CTE
 )
 
 SELECT * FROM GDELT_EVENTS_CTE
