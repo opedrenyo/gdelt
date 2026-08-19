@@ -1,4 +1,4 @@
-{{ config(materialized='incremental', unique_key='GLOBALEVENTID', incremental_strategy='merge') }}
+{{ config(materialized='incremental', unique_key='GLOBAL_EVENT_ID', incremental_strategy='merge') }}
 
 WITH GDELT_CLEAN_CTE AS (
     SELECT 
