@@ -2,14 +2,15 @@
 
 WITH GDELT_CLEAN_CTE AS (
     SELECT 
-        * FROM {{ source('GDELT', 'GDELT_EVENT_DATABASE_1_0_RAW')}}
+        * FROM {{ source('GDELT', 'GDELT_EVENT_DATABASE_1_0_RAW')}} AS RAW
     WHERE EVENTCODE NOT IN ('--','---', 'X')
 
     {% if is_incremental() %}
     AND NOT EXISTS (
             SELECT 1
             FROM {{ this }} AS TARGET
-            WHERE TARGET.GLOBAL_EVENT_ID = RAW.GLOBALEVENTID
+            WHERE TARGET.GLOBAL_EVENT_ID = RAW.GLOBALEVENTID::BIGINT
+            )
     {% endif %}
 ),
 
