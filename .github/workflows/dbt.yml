@@ -7,6 +7,14 @@ jobs:
   dbt:
     runs-on: ubuntu-latest
 
+    env:
+      SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+      SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+      SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+      SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+      SNOWFLAKE_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
+      SNOWFLAKE_SCHEMA: ${{ secrets.SNOWFLAKE_SCHEMA }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
@@ -21,5 +29,5 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install dbt-snowflake
 
-      - name: Check dbt version
-        run: dbt --version
+      - name: Test Snowflake connection
+        run: dbt debug --profiles-dir .github/dbt
